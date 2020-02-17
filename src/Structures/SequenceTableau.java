@@ -1,21 +1,21 @@
 package Structures;
 
-class SequenceTableau implements Sequence {
-    int[] elements;
+public class SequenceTableau<E> implements Sequence<E> {
+    Object[] elements;
     int taille, debut;
 
     public SequenceTableau() {
         // Taille par défaut
-        elements = new int[1];
+        elements = new Object[1];
         debut = 0;
         taille = 0;
     }
 
-    private void redimensionne(int nouvelleCapacite) {
-        int[] nouveau;
+    public void redimensionne(int nouvelleCapacite) {
+        Object[] nouveau;
 
         if (nouvelleCapacite > elements.length) {
-            nouveau = new int[nouvelleCapacite];
+            nouveau = new Object[nouvelleCapacite];
             int aCopier = taille;
             for (int i = 0; i < aCopier; i++)
                 nouveau[i] = extraitTete();
@@ -26,7 +26,15 @@ class SequenceTableau implements Sequence {
     }
 
     @Override
-    public void insereTete(int element) {
+    public void insereQueue(E element) {
+        if (taille == elements.length)
+            redimensionne(taille * 2);
+        elements[(debut + taille) % elements.length] = element;
+        taille++;
+    }
+
+    @Override
+    public void insereTete(E element) {
         if (taille == elements.length)
             redimensionne(taille * 2);
         debut = debut - 1;
@@ -36,21 +44,17 @@ class SequenceTableau implements Sequence {
         taille++;
     }
 
-    public void insereQueue(int element) {
-        if (taille == elements.length)
-            redimensionne(taille * 2);
-        elements[(debut + taille) % elements.length] = element;
-        taille++;
-    }
-
-    public int extraitTete() {
+    @Override
+    public E extraitTete() {
         // Resultat invalide si la sequence est vide
-        int resultat = elements[debut];
+        @SuppressWarnings("unchecked")
+        E resultat = (E) elements[debut];
         debut = (debut + 1) % elements.length;
         taille--;
         return resultat;
     }
 
+    @Override
     public boolean estVide() {
         return taille == 0;
     }
@@ -68,5 +72,11 @@ class SequenceTableau implements Sequence {
         resultat += "]";
         return resultat;
     }
+
+    @Override
+    public Iterateur<E> iterateur() {
+        return new IterateurSequenceTableau<>(this);
+    }
 }
+
 
