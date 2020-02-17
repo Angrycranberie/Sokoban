@@ -1,4 +1,4 @@
-package APNEE;
+package Main;
 
 class Niveau {
 	static final int VIDE = 0;
