@@ -1,110 +1,96 @@
 package APNEE;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.*;
-
+import java.io.InputStream;
+import java.util.Scanner;
 
 public class LecteurNiveaux {
-	public LecteurNiveaux() {
+	Scanner s;
+	Niveau n;
 
+	LecteurNiveaux(InputStream in) {
+		s = new Scanner(in);
 	}
 
-	public Niveau lisProchainNiveau(Scanner s) {
-		if(!s.hasNextLine()) {
+	String lisLigne() {
+		if (s.hasNextLine()) {
+			String ligne;
+			ligne = s.nextLine();
+			// Nettoyage des séparateurs de fin et commentaires
+			int i;
+			int dernier = -1;
+			boolean commentaire = false;
+			for (i = 0; (i < ligne.length()) && !commentaire; i++) {
+				char c = ligne.charAt(i);
+				if (!Character.isWhitespace(c) && (c != ';')) {
+					dernier = i;
+				}
+				if (c == ';') {
+					commentaire = true;
+				}
+			}
+			// Un commentaire non vide sera pris comme nom de niveau
+			// -> le dernier commentaire non vide sera le nom final
+			if (commentaire) {
+				char c = ' ';
+				while (Character.isWhitespace(c) && (i < ligne.length())) {
+					c = ligne.charAt(i);
+					if (!Character.isWhitespace(c))
+						n.fixeNom(ligne.substring(i));
+					i++;
+				}
+			}
+			return ligne.substring(0, dernier + 1);
+		} else {
 			return null;
 		}
-		int l = 0, c = 0;
-		int cTemp = 0, i = 0;
-
-		// read until the end of level
-		s.useDelimiter(";");
-		String chaineLvl = s.next();
-
-		// read until matching level separation
-		s.useDelimiter("\n\n");
-		chaineLvl = chaineLvl.concat(s.next());
-		if(s.hasNextLine()) s.nextLine();
-		if(s.hasNextLine()) s.nextLine();
-
-		// System.out.println(chaineLvl);
-		Niveau lvl;
-
-		while(chaineLvl.charAt(i) != ';') {
-			if(chaineLvl.charAt(i) == '\n') {
-				l++;
-				if(c < cTemp) {
-					c = cTemp;
-				}
-				cTemp = 0;
-			} else {
-				cTemp++;
-			}
-			i++;
-		}
-
-		// System.out.println("lignes : " + l);
-		// System.out.println("colonnes : " + c);
-
-		lvl = new Niveau(l, c);
-		String[] comments = chaineLvl.split("; ");
-		lvl.fixeNom(comments[comments.length - 1].replace("\r", "").replace("\n", ""));
-
-		i = 0;
-		for(int j = 0; j < l; j++) {
-			for(int k = 0; k < c; k++) {
-				if(chaineLvl.charAt(i) != '\n') {
-					switch(chaineLvl.charAt(i)) {
-						case '@':
-							lvl.ajoutePousseur(j, k);
-							break;
-						case '#':
-							lvl.ajouteMur(j, k);
-							break;
-						case '.':
-							lvl.ajouteBut(j, k);
-							break;
-						case '$':
-							lvl.ajouteCaisse(j, k);
-							break;
-						case ' ':
-							lvl.videCase(j, k);
-							break;
-						default:
-							break;
-					}
-				} else {
-					if(k != 0) {
-						for(; k < c; k++) {
-							lvl.videCase(j, k);
-						}
-					} else {
-						k--;
-					}
-				}
-				i++;
-			}
-		}
-
-		return lvl;
 	}
 
-	public static void main(String[] args) throws FileNotFoundException {
-		File f = new File("C:\\Users\\mathd\\IdeaProjects\\src\\lvl.txt");
-		Scanner s = new Scanner(f);
-
-		LecteurNiveaux lec = new LecteurNiveaux();
-
-		// read all levels from file
-		List<Niveau> allLevels = new ArrayList<Niveau>();
-		Niveau n = lec.lisProchainNiveau(s);
-		while(n != null) {
-			allLevels.add(n);
-			n = lec.lisProchainNiveau(s);
+	Niveau lisProchainNiveau() {
+		n = new Niveau();
+		String ligne = "";
+		while (ligne.length() == 0) {
+			ligne = lisLigne();
+			if (ligne == null)
+				return null;
 		}
-        RedacteurNiveaux redN = new RedacteurNiveaux();
-		for(Niveau level : allLevels) {
-			redN.ecritNiveau(level);
+		int i = 0;
+		while ((ligne != null) && (ligne.length() > 0)) {
+			for (int j = 0; j < ligne.length(); j++) {
+				char c = ligne.charAt(j);
+				n.videCase(i, j);
+				switch (c) {
+					case ' ':
+						break;
+					case '#':
+						n.ajouteMur(i, j);
+						break;
+					case '@':
+						n.ajoutePousseur(i, j);
+						break;
+					case '+':
+						n.ajoutePousseur(i, j);
+						n.ajouteBut(i, j);
+						break;
+					case '$':
+						n.ajouteCaisse(i, j);
+						break;
+					case '*':
+						n.ajouteCaisse(i, j);
+						n.ajouteBut(i, j);
+						break;
+					case '.':
+						n.ajouteBut(i, j);
+						break;
+					default:
+						System.err.println("Caractère inconnu : " + c);
+				}
+			}
+			ligne = lisLigne();
+			i++;
 		}
+		if (i > 0)
+			return n;
+		else
+			return null;
 	}
 }
