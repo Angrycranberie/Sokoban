@@ -1,8 +1,5 @@
 package Global;
 
-import Structures.SequenceList;
-
-import javax.sound.midi.Sequence;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.NoSuchElementException;
@@ -34,7 +31,7 @@ public class Configuration {
         return value;
      }
 
-     public Sequence nouvelleSequence(){
+    /* public Sequence nouvelleSequence(){
 
         if(lis("sequence") == "tableau"){
             return new SequenceTableau()
@@ -42,7 +39,7 @@ public class Configuration {
             return new SequenceList();
         }
      }
-
+*/
     
 
 

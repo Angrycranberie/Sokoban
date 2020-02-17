@@ -1,86 +1,102 @@
 package APNEE;
 
-import java.security.PublicKey;
-import java.util.Arrays;
+class Niveau {
+	static final int VIDE = 0;
+	static final int MUR = 1;
+	static final int POUSSEUR = 2;
+	static final int CAISSE = 4;
+	static final int BUT = 8;
+	int l, c;
+	int[][] cases;
+	String nom;
 
-public class Niveau{
-	private String nom;
-	private int lignes, colones;
-	private char[][] tabNiv;
-
-
-	public Niveau(int l, int c) {
-		nom = "noName";
-		lignes = l;
-		colones = c;
-		tabNiv = new char[l][c];
+	Niveau() {
+		cases = new int[1][1];
+		l = c = 1;
 	}
 
-	public void fixeNom(String s) {
+	int ajuste(int cap, int objectif) {
+		while (cap <= objectif) {
+			cap = cap * 2;
+		}
+		return cap;
+	}
+
+	void redimensionne(int nouvL, int nouvC) {
+		int capL = ajuste(cases.length, nouvL);
+		int capC = ajuste(cases[0].length, nouvC);
+		if ((capL > cases.length) || (capC > cases[0].length)) {
+			int[][] nouvelles = new int[capL][capC];
+			for (int i = 0; i < cases.length; i++)
+				for (int j = 0; j < cases[0].length; j++)
+					nouvelles[i][j] = cases[i][j];
+			cases = nouvelles;
+		}
+		if (nouvL >= l)
+			l = nouvL + 1;
+		if (nouvC >= c)
+			c = nouvC + 1;
+	}
+
+	void fixeNom(String s) {
 		nom = s;
 	}
 
-	public void videCase(int i, int j) {
-		tabNiv[i][j] = ' ';
+	void videCase(int i, int j) {
+		redimensionne(i, j);
+		cases[i][j] = VIDE;
 	}
 
-	public void ajouteMur(int i, int j) {
-		tabNiv[i][j] = '#';
+	void ajoute(int contenu, int i, int j) {
+		redimensionne(i, j);
+		cases[i][j] |= contenu;
 	}
 
-	public void ajoutePousseur(int i, int j) {
-		tabNiv[i][j] = '@';
+	void ajouteMur(int i, int j) {
+		ajoute(MUR, i, j);
 	}
 
-	public void ajouteCaisse(int i, int j) {
-		tabNiv[i][j] = '$';
+	void ajoutePousseur(int i, int j) {
+		ajoute(POUSSEUR, i, j);
 	}
 
-	public void ajouteBut(int i, int j) {
-		tabNiv[i][j] = '.';
+	void ajouteCaisse(int i, int j) {
+		ajoute(CAISSE, i, j);
 	}
 
-	public int lignes() {
-		return lignes;
+	void ajouteBut(int i, int j) {
+		ajoute(BUT, i, j);
 	}
 
-	public int colones() {
-		return colones;
+	int lignes() {
+		return l;
 	}
 
-	public String nom() {
+	int colonnes() {
+		return c;
+	}
+
+	String nom() {
 		return nom;
 	}
 
-	public boolean estVide(int i, int j) {
-		return(tabNiv[i][j] == ' ');
+	boolean estVide(int l, int c) {
+		return cases[l][c] == VIDE;
 	}
 
-	public boolean aMur(int i, int j) {
-		return(tabNiv[i][j] == '#');
+	boolean aMur(int l, int c) {
+		return (cases[l][c] & MUR) != 0;
 	}
 
-	public boolean aBut(int i, int j) {
-		return(tabNiv[i][j] == '.');
+	boolean aBut(int l, int c) {
+		return (cases[l][c] & BUT) != 0;
 	}
 
-	public boolean aPousseur(int i, int j) {
-		return(tabNiv[i][j] == '@');
+	boolean aPousseur(int l, int c) {
+		return (cases[l][c] & POUSSEUR) != 0;
 	}
 
-	public boolean aCaisse(int i, int j) {
-		return(tabNiv[i][j] == '$');
-	}
-
-	public void affiche() {
-		for(int i = 0; i< lignes; i++){
-			for (int j = 0; j < colones; j++) {
-				System.out.print(tabNiv[i][j]);
-			}
-			System.out.println();
-		}
-
-		System.out.println("; " + nom);
-		System.out.println();
+	boolean aCaisse(int l, int c) {
+		return (cases[l][c] & CAISSE) != 0;
 	}
 }
