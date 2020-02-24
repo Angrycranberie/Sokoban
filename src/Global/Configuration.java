@@ -44,7 +44,7 @@ public class Configuration {
 
     protected Configuration() throws FileNotFoundException {
         // On charge les propriétés
-        FileInputStream in = new FileInputStream("C:\\Users\\mathd\\Desktop\\Sokoban\\resources\\defaut.cfg");
+        FileInputStream in = new FileInputStream("resources\\defaut.cfg");
         Properties defaut = new Properties();
         chargerProprietes(defaut, in, "defaut.cfg");
         // Il faut attendre le dernier moment pour utiliser le logger
