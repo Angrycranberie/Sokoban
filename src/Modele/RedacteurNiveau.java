@@ -1,4 +1,4 @@
-package Main;
+package Modele;
 
 import java.io.OutputStream;
 import java.io.PrintStream;

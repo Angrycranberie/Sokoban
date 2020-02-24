@@ -1,19 +1,20 @@
-package Main;
+package Vue;
 
 import Global.Configuration;
+import Modele.Jeu;
+import Modele.Niveau;
 
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import java.awt.*;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
-public class NiveauGraphique extends JComponent {
-    Image pousseur, mur, sol, caisse, but, caisseSurBut;
+public class VueNiveau extends NiveauGraphique {
+    ImageSokoban pousseur, mur, sol, caisse, but, caisseSurBut;
     Jeu j;
+    int hauteurCase, largeurCase;
 
-    NiveauGraphique(Jeu jeu) throws FileNotFoundException {
+    VueNiveau(Jeu jeu) throws FileNotFoundException {
         j = jeu;
+        j.ajouteObservateur(this);
         pousseur = lisImage("Pousseur");
         mur = lisImage("Mur");
         sol = lisImage("Sol");
@@ -22,13 +23,13 @@ public class NiveauGraphique extends JComponent {
         caisseSurBut = lisImage("CaisseSurBut");
     }
 
-    private Image lisImage(String nom) throws FileNotFoundException {
+    private ImageSokoban lisImage(String nom) throws FileNotFoundException {
         String ressource = Configuration.instance().lis(nom);
         Configuration.instance().logger().info("Lecture de l'image " + ressource + " comme " + nom);
         FileInputStream in = new FileInputStream(ressource);
         try {
             // Chargement d'une image utilisable dans Swing
-            return ImageIO.read(in);
+            return super.lisImage(in);
         } catch (Exception e) {
             Configuration.instance().logger().severe("Impossible de charger l'image " + ressource);
             System.exit(1);
@@ -36,44 +37,48 @@ public class NiveauGraphique extends JComponent {
         return null;
     }
 
-    private void tracer(Graphics2D g, Image i, int x, int y, int l, int h) {
-        g.drawImage(i, x, y, l, h, null);
+    @Override
+    int hauteurCase() {
+        return hauteurCase;
     }
 
-    public void paintComponent(Graphics g) {
-        Graphics2D drawable = (Graphics2D) g;
+    @Override
+    int largeurCase() {
+        return largeurCase;
+    }
+
+    @Override
+    void tracerNiveau() {
         Niveau n = j.niveau();
 
-        int largeur = getSize().width;
-        int hauteur = getSize().height;
-        int largeurCase = largeur / n.colonnes();
-        int hauteurCase = hauteur / n.lignes();
+        largeurCase = largeur() / n.colonnes();
+        hauteurCase = hauteur() / n.lignes();
         // On prend des cases carrées
         largeurCase = Math.min(largeurCase, hauteurCase);
         hauteurCase = largeurCase;
 
         // On efface tout
-        drawable.clearRect(0, 0, largeur, hauteur);
         for (int ligne = 0; ligne < n.lignes(); ligne++)
             for (int colonne = 0; colonne < n.colonnes(); colonne++) {
                 int x = colonne * largeurCase;
                 int y = ligne * hauteurCase;
                 // Tracé du sol
                 if (n.aBut(ligne, colonne))
-                    tracer(drawable, but, x, y, largeurCase, hauteurCase);
+                    tracer(but, x, y, largeurCase, hauteurCase);
                 else
-                    tracer(drawable, sol, x, y, largeurCase, hauteurCase);
+                    tracer(sol, x, y, largeurCase, hauteurCase);
                 // Tracé des objets
                 if (n.aMur(ligne, colonne))
-                    tracer(drawable, mur, x, y, largeurCase, hauteurCase);
+                    tracer(mur, x, y, largeurCase, hauteurCase);
                 else if (n.aPousseur(ligne, colonne))
-                    tracer(drawable, pousseur, x, y, largeurCase, hauteurCase);
+                    tracer(pousseur, x, y, largeurCase, hauteurCase);
                 else if (n.aCaisse(ligne, colonne))
                     if (n.aBut(ligne, colonne))
-                        tracer(drawable, caisseSurBut, x, y, largeurCase, hauteurCase);
+                        tracer(caisseSurBut, x, y, largeurCase, hauteurCase);
                     else
-                        tracer(drawable, caisse, x, y, largeurCase, hauteurCase);
+                        tracer(caisse, x, y, largeurCase, hauteurCase);
             }
+
     }
 }
 
