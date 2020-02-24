@@ -1,4 +1,4 @@
-package APNEE;
+package Main;
 
 import java.io.InputStream;
 import java.util.Scanner;

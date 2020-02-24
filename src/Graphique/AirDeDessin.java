@@ -27,18 +27,21 @@ package Graphique;
  *          38401 Saint Martin d'Hères
  */
 
+import Global.Configuration;
+
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 
 class AireDeDessin extends JComponent {
-    String message;
     int counter;
     Image img;
 
-    /*public AireDeDessin() {
-        message = new String("Bienvenue dans cette fenetre");
+    public AireDeDessin() throws FileNotFoundException {
         // Chargement de l'image de la même manière que le fichier de niveaux
-        InputStream in = Configuration.charge("Images/Pousseur.png");
+        FileInputStream in = (FileInputStream) Configuration.charge("C:\\Users\\mathd\\Desktop\\Sokoban\\resources\\Images\\Pousseur.png");
         try {
             // Chargement d'une image utilisable dans Swing
             img = ImageIO.read(in);
@@ -47,8 +50,9 @@ class AireDeDessin extends JComponent {
             System.exit(1);
         }
         counter = 1;
-    }*/
+    }
 
+    @Override
     public void paintComponent(Graphics g) {
         System.out.println("Entree dans paintComponent : " + counter++);
 
@@ -64,12 +68,9 @@ class AireDeDessin extends JComponent {
         Point center = new Point(width/2, height/2);
 
         // On efface tout
-        drawable.setPaint(Color.white);
-        drawable.fillRect(0, 0, width, height);
-        drawable.setPaint(Color.black);
+        drawable.clearRect(0, 0, width, height);
 
         // On affiche une petite image au milieu
         drawable.drawImage(img, center.x-20, center.y-20, 40, 40, null);
     }
 }
-//}

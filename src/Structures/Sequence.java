@@ -1,7 +1,14 @@
 package Structures;
 
-public interface Sequence {
+public interface Sequence<E> {
+    void insereQueue(E element);
 
-    void insereTete(int element);
+    void insereTete(E element);
 
+    E extraitTete();
+
+    boolean estVide();
+
+    Iterateur<E> iterateur();
 }
+

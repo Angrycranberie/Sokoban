@@ -2,13 +2,13 @@ package Structures;
 
 import java.util.NoSuchElementException;
 
-class IterateurSequenceList implements Iterateur {
+class IterateurSequenceList<T> implements Iterateur<T> {
 
-    SequenceList e;
-    Maillon pprec, prec, courant;
+    SequenceList<T> e;
+    Maillon<T> pprec, prec, courant;
     boolean last;
 
-    IterateurSequenceList(SequenceList e) {
+    IterateurSequenceList(SequenceList<T> e) {
         this.e = e;
         pprec = prec = null;
         courant = e.tete;
@@ -21,7 +21,7 @@ class IterateurSequenceList implements Iterateur {
     }
 
     @Override
-    public int prochain() {
+    public T prochain() {
         if (aProchain()) {
             pprec = prec;
             prec = courant;
@@ -51,4 +51,5 @@ class IterateurSequenceList implements Iterateur {
         }
     }
 }
+
 
