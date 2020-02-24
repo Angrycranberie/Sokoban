@@ -1,6 +1,9 @@
-package Main;
-
+import Controleur.ControleurMediateur;
 import Global.Configuration;
+import Modele.Jeu;
+import Modele.LecteurNiveaux;
+import Vue.CollecteurEvenements;
+import Vue.InterfaceGraphique;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -21,18 +24,7 @@ public class Sokoban {
 
         LecteurNiveaux l = new LecteurNiveaux(in);
         Jeu j = new Jeu(l);
-        int num = 1;
-        if (args.length > 0)
-            num = Integer.parseInt(args[0]);
-        Configuration.instance().logger().info("Affichage du Niveau " + num);
-        while (num != 0) {
-            if (!j.prochainNiveau()) {
-                Configuration.instance().logger().info("Pas assez de niveaux dans le fichier de niveaux");
-                System.exit(2);
-            }
-            num--;
-        }
-        new InterfaceGraphique(j);
+        CollecteurEvenements control = new ControleurMediateur(j);
+        InterfaceGraphique.demarrer(j, control);
     }
 }
-
