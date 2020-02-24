@@ -1,7 +1,9 @@
 package Structures;
 
-import java.util.Random;
 import Global.Configuration;
+
+import java.io.FileNotFoundException;
+import java.util.Random;
 
 public class TestSequence {
     static int min, max, count;
@@ -59,7 +61,7 @@ public class TestSequence {
         return s;
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws FileNotFoundException {
         Random r = new Random();
         Sequence<Integer> s;
         s = Configuration.instance().nouvelleSequence();

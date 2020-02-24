@@ -2,23 +2,19 @@ package Main;
 
 import Global.Configuration;
 
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.InputStream;
 
 public class Sokoban {
     public static void main(String[] args) throws FileNotFoundException {
-        InputStream in;
-        String fichier = Configuration.instance().lis("C:\\Users\\mathd\\Desktop\\Sokoban\\resources\\Niveaux\\Original.txt");
-        in = Configuration.charge(fichier);
+        FileInputStream in;
+        String fichier = Configuration.instance().lis("FichierNiveaux");
+        in = new FileInputStream(fichier);
 
         // La méthode de chargement suivante ne dépend pas du système de fichier et sera
         // donc utilisable pour un .jar
         // Attention, par contre, le fichier doit se trouver dans le CLASSPATH
-        in = Configuration.charge(fichier);
-        if (in == null) {
-            System.err.println("ERREUR : impossible de trouver le fichier de niveaux nommé " + fichier);
-            System.exit(1);
-        }
+        //in = Configuration.charge(fichier);
 
 
         Configuration.instance().logger().info("Niveaux trouvés");

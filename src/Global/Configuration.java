@@ -18,7 +18,7 @@ public class Configuration {
     Properties prop;
     Logger logger;
 
-    public static Configuration instance() {
+    public static Configuration instance() throws FileNotFoundException {
         if (instance == null)
             instance = new Configuration();
         return instance;
@@ -31,7 +31,7 @@ public class Configuration {
         return ClassLoader.getSystemClassLoader().getResourceAsStream(nom);
     }
 
-    static void chargerProprietes(Properties p, InputStream in, String nom) {
+    static void chargerProprietes(Properties p, FileInputStream in, String nom) {
 
         try {
             p.load(in);
@@ -42,9 +42,9 @@ public class Configuration {
         }
     }
 
-    protected Configuration() {
+    protected Configuration() throws FileNotFoundException {
         // On charge les propriétés
-        InputStream in = charge("defaut.cfg");
+        FileInputStream in = new FileInputStream("C:\\Users\\mathd\\Desktop\\Sokoban\\resources\\defaut.cfg");
         Properties defaut = new Properties();
         chargerProprietes(defaut, in, "defaut.cfg");
         // Il faut attendre le dernier moment pour utiliser le logger

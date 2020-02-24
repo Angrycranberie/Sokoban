@@ -5,13 +5,14 @@ import Global.Configuration;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.io.InputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 
 public class NiveauGraphique extends JComponent {
     Image pousseur, mur, sol, caisse, but, caisseSurBut;
     Jeu j;
 
-    NiveauGraphique(Jeu jeu) {
+    NiveauGraphique(Jeu jeu) throws FileNotFoundException {
         j = jeu;
         pousseur = lisImage("Pousseur");
         mur = lisImage("Mur");
@@ -21,10 +22,10 @@ public class NiveauGraphique extends JComponent {
         caisseSurBut = lisImage("CaisseSurBut");
     }
 
-    private Image lisImage(String nom) {
+    private Image lisImage(String nom) throws FileNotFoundException {
         String ressource = Configuration.instance().lis(nom);
         Configuration.instance().logger().info("Lecture de l'image " + ressource + " comme " + nom);
-        InputStream in = Configuration.charge(ressource);
+        FileInputStream in = new FileInputStream(ressource);
         try {
             // Chargement d'une image utilisable dans Swing
             return ImageIO.read(in);

@@ -32,15 +32,16 @@ import Global.Configuration;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.io.InputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 
 class AireDeDessin extends JComponent {
     int counter;
     Image img;
 
-    public AireDeDessin() {
+    public AireDeDessin() throws FileNotFoundException {
         // Chargement de l'image de la même manière que le fichier de niveaux
-        InputStream in = Configuration.charge("Images/Pousseur.png");
+        FileInputStream in = (FileInputStream) Configuration.charge("C:\\Users\\mathd\\Desktop\\Sokoban\\resources\\Images\\Pousseur.png");
         try {
             // Chargement d'une image utilisable dans Swing
             img = ImageIO.read(in);

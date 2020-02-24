@@ -28,6 +28,7 @@ package Graphique;
  */
 
 import javax.swing.*;
+import java.io.FileNotFoundException;
 
 // L'interface runnable déclare une méthode run
 public class DemoFenetre implements Runnable {
@@ -36,7 +37,11 @@ public class DemoFenetre implements Runnable {
         JFrame frame = new JFrame("Ma fenetre a moi");
 
         // Ajout de notre composant de dessin dans la fenetre
-        frame.add(new AireDeDessin());
+        try {
+            frame.add(new AireDeDessin());
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
 
         // Un clic sur le bouton de fermeture clos l'application
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
